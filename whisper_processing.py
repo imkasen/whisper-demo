@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
     audio_path: str = extraction(VIDEO_PATH, OUTPUT_DIR_PATH)
     # result = transcribe(audio_path, "tiny", "en")
-    result = transcribe(audio_path, "small", "zh", "以下是普通话的句子")
+    result = transcribe(audio_path, "small", "zh", "以下请使用简体中文")
     write_output(result, FILE_NAME, OUTPUT_DIR_PATH)
 
     t2: float = time.perf_counter()
