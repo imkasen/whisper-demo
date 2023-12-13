@@ -1,6 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/vim,venv,emacs,linux,macos,python,windows,virtualenv,visualstudio,jetbrains+all,visualstudiocode,audio,video,jupyternotebooks
 # Edit at https://www.toptal.com/developers/gitignore?templates=vim,venv,emacs,linux,macos,python,windows,virtualenv,visualstudio,jetbrains+all,visualstudiocode,audio,video,jupyternotebooks
 
+input/
 models/
 output/
 

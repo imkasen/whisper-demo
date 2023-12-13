@@ -1,3 +1,7 @@
+"""
+使用 Whisper 对视频文件进行音频识别
+"""
+
 import whisper
 from whisper.utils import get_writer
 import os
@@ -69,7 +73,7 @@ if __name__ == "__main__":
 
     audio_path: str = extraction(VIDEO_PATH, OUTPUT_DIR_PATH)
     # result = transcribe(audio_path, "tiny", "en")
-    result = transcribe(audio_path, "small", "zh", "以下请使用简体中文")
+    result = transcribe(audio_path, "small", None, "如果出现中文请使用简体")
     write_output(result, FILE_NAME, OUTPUT_DIR_PATH)
 
     t2: float = time.perf_counter()
