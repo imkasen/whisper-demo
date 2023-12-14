@@ -10,6 +10,7 @@ from pathlib import Path
 
 PROJ_ROOT: Path = Path().resolve()
 MODEL_PATH: str = os.path.join(PROJ_ROOT, "models")
+PROMPT = "请使用简体中文来表示中文内容"
 
 
 def extraction(video_path: str, output_dir_path: str):
@@ -72,8 +73,7 @@ if __name__ == "__main__":
         print(f"Create {OUTPUT_DIR_PATH}")
 
     audio_path: str = extraction(VIDEO_PATH, OUTPUT_DIR_PATH)
-    # result = transcribe(audio_path, "tiny", "en")
-    result = transcribe(audio_path, "small", None, "如果出现中文请使用简体")
+    result = transcribe(audio_path, "small", None, PROMPT)
     write_output(result, FILE_NAME, OUTPUT_DIR_PATH)
 
     t2: float = time.perf_counter()

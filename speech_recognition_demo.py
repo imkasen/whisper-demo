@@ -10,6 +10,7 @@ import os
 
 PROJ_ROOT: Path = Path().resolve()
 MODEL_PATH: str = os.path.join(PROJ_ROOT, "models")
+PROMPT = "请使用简体中文来表示中文内容"
 
 
 def whisper_recognition(recognizer: sr.Recognizer, 
@@ -65,7 +66,7 @@ def microphone_recognition(recognizer: sr.Recognizer, model: str):
         print("Say something:")
         audio: sr.AudioData = r.listen(source)
         
-        whisper_recognition(recognizer, audio, model, prompt="如果出现中文请使用简体")
+        whisper_recognition(recognizer, audio, model, prompt=PROMPT)
         
         
 def microphone_thread_worker(recognizer: sr.Recognizer, que: Queue[sr.AudioData], model: str):
@@ -82,7 +83,7 @@ def microphone_thread_worker(recognizer: sr.Recognizer, que: Queue[sr.AudioData]
             break  # 主线程结束时停止处理
         
         # 收到音频数据，现在我们可以识别了
-        whisper_recognition(recognizer, audio, model, prompt="如果出现中文请使用简体")
+        whisper_recognition(recognizer, audio, model, prompt=PROMPT)
         
         que.task_done()  # 在队列中将音频处理作业标记为已完成
         
@@ -98,7 +99,7 @@ def microphone_background_recognition(recognizer: sr.Recognizer, model: str):
     recognize_thread = Thread(target=microphone_thread_worker, args=(recognizer, audio_queue, model,), daemon=True)
     recognize_thread.start()
     with sr.Microphone(sample_rate=16000) as source:
-        recognizer.adjust_for_ambient_noise(source)  # listen for 1 second to calibrate the energy threshold for ambient noise levels
+        recognizer.adjust_for_ambient_noise(source)  # 聆听 1 秒钟来校准环境噪音水平的能量阈值
         print("Say something:")
         try:
             while True:  # 反复聆听，并将生成的音频放入音频处理任务队列
