@@ -2,6 +2,7 @@
 
 - Whisper 模型[下载](https://github.com/openai/whisper/blob/main/whisper/__init__.py)
 - Whisper 支持语言[列表](https://github.com/openai/whisper/blob/main/whisper/tokenizer.py)
+- Faster Whisper 模型[列表](https://github.com/SYSTRAN/faster-whisper/blob/master/faster_whisper/utils.py)、[下载](https://huggingface.co/Systran)
 
 ## 安装
 

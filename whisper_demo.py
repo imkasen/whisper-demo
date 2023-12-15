@@ -24,7 +24,6 @@ def extraction(video_path: str, output_dir_path: str):
     _, video_name = os.path.split(video_name)
     audio_path: str = os.path.join(output_dir_path, f"{video_name}.aac")
     os.system(f"ffmpeg -hide_banner -v error -i {video_path} -vn -c:a copy {audio_path} -y")
-    print(f"{video_name}.aac is extracted.")
     return audio_path
 
 
@@ -75,6 +74,8 @@ if __name__ == "__main__":
     audio_path: str = extraction(VIDEO_PATH, OUTPUT_DIR_PATH)
     result = transcribe(audio_path, "small", None, PROMPT)
     write_output(result, FILE_NAME, OUTPUT_DIR_PATH)
+    
+    os.remove(audio_path)
 
     t2: float = time.perf_counter()
     print(f"Total time: {(t2 - t1):.2f}s")
