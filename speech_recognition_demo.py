@@ -6,11 +6,15 @@ import speech_recognition as sr
 from pathlib import Path
 from threading import Thread
 from queue import Queue
+from faster_whisper import WhisperModel
 import os
+import io
+import soundfile as sf
+import numpy as np
 
 PROJ_ROOT: Path = Path().resolve()
 MODEL_PATH: str = os.path.join(PROJ_ROOT, "models")
-PROMPT = "请使用简体中文来表示中文内容"
+PROMPT = "如果使用了中文，请使用简体中文来表示文本内容"
 
 
 def whisper_recognition(recognizer: sr.Recognizer, 
@@ -35,6 +39,37 @@ def whisper_recognition(recognizer: sr.Recognizer,
                                       initial_prompt=prompt)
         if (results := results.strip()) != "":
             print(results)
+    except sr.UnknownValueError:
+        print("Whisper could not understand audio!")
+    except sr.RequestError as e:
+        print("Could not request results from Whisper!")
+
+
+def faster_whisper_recognition(audio: sr.AudioData, 
+                               model_size: str, 
+                               language: str | None = None, 
+                               prompt: str | None = None):
+    try:
+        wav_bytes: bytes = audio.get_wav_data(convert_rate=16000)
+        wav_stream = io.BytesIO(wav_bytes)
+        audio_array, _ = sf.read(wav_stream)
+        audio_array = audio_array.astype(np.float32)
+        
+        model = WhisperModel(model_size, 
+                             device="cuda", 
+                             compute_type="float16", 
+                             download_root=os.path.join(MODEL_PATH, "faster_whisper"), 
+                             local_files_only=True)
+        
+        segments, _ = model.transcribe(
+            audio_array, 
+            language=language,
+            initial_prompt=prompt
+        )
+        
+        for segment in segments:
+            print(segment.text)
+        
     except sr.UnknownValueError:
         print("Whisper could not understand audio!")
     except sr.RequestError as e:
@@ -83,7 +118,8 @@ def microphone_thread_worker(recognizer: sr.Recognizer, que: Queue[sr.AudioData]
             break  # 主线程结束时停止处理
         
         # 收到音频数据，现在我们可以识别了
-        whisper_recognition(recognizer, audio, model, prompt=PROMPT)
+        # whisper_recognition(recognizer, audio, model, prompt=PROMPT)
+        faster_whisper_recognition(audio, model, prompt=PROMPT)
         
         que.task_done()  # 在队列中将音频处理作业标记为已完成
         
@@ -123,4 +159,4 @@ if __name__ == "__main__":
     # microphone_recognition(r, "large")
     
     # 麦克风输入识别，后台运行线程进行持续监听
-    microphone_background_recognition(r, "small")
+    microphone_background_recognition(r, "large")

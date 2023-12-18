@@ -10,7 +10,7 @@ from pathlib import Path
 
 PROJ_ROOT: Path = Path().resolve()
 MODEL_PATH: str = os.path.join(PROJ_ROOT, "models")
-PROMPT = "请使用简体中文来表示中文内容"
+PROMPT = "如果使用了中文，请使用简体中文来表示文本内容"
 
 
 def extraction(video_path: str, output_dir_path: str):
@@ -38,8 +38,8 @@ def transcribe(audio_path: str, model_name: str = "small", language: str | None 
     :return: 返回字典类型，即经过 whisper 进行 transcribe 后的内容
     """
     # model_name: tiny, base, small, medium, large
-    model = whisper.load_model(model_name, download_root=MODEL_PATH)
-    result = model.transcribe(audio_path, language=language, initial_prompt=prompt)
+    model: whisper.Whisper = whisper.load_model(model_name, download_root=MODEL_PATH)
+    result: dict[str, str | list] = model.transcribe(audio_path, language=language, initial_prompt=prompt)
     print(f"{audio_path} is transcribed.")
     return result
 
@@ -72,7 +72,7 @@ if __name__ == "__main__":
         print(f"Create {OUTPUT_DIR_PATH}")
 
     audio_path: str = extraction(VIDEO_PATH, OUTPUT_DIR_PATH)
-    result = transcribe(audio_path, "small", None, PROMPT)
+    result: dict[str, str | list] = transcribe(audio_path, "small", None, PROMPT)
     write_output(result, FILE_NAME, OUTPUT_DIR_PATH)
     
     os.remove(audio_path)

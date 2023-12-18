@@ -5,7 +5,7 @@ from pathlib import Path
 
 PROJ_ROOT: Path = Path().resolve()
 MODEL_PATH: str = os.path.join(PROJ_ROOT, "models", "faster_whisper")
-PROMPT = "请使用简体中文来表示中文内容"
+PROMPT = "如果使用了中文，请使用简体中文来表示文本内容"
 
 
 def extraction(video_path: str, output_dir_path: str):
