@@ -2,18 +2,19 @@
 使用 Whisper 对视频文件进行音频识别
 """
 
-import whisper
-from whisper.utils import get_writer
 import os
 import time
 from pathlib import Path
+
+import whisper
+from whisper.utils import get_writer
 
 PROJ_ROOT: Path = Path().resolve()
 MODEL_PATH: str = os.path.join(PROJ_ROOT, "models")
 PROMPT = "如果使用了中文，请使用简体中文来表示文本内容"
 
 
-def extraction(video_path: str, output_dir_path: str):
+def extraction(video_path: str, output_dir_path: str) -> str:
     """
     利用 FFmpeg 提取视频中的音频文件
 
@@ -27,7 +28,12 @@ def extraction(video_path: str, output_dir_path: str):
     return audio_path
 
 
-def transcribe(audio_path: str, model_name: str = "small", language: str | None = None, prompt: str | None = None):
+def transcribe(
+    audio_path: str,
+    model_name: str = "small",
+    language: str | None = None,
+    prompt: str | None = None,
+) -> dict[str, str | list]:
     """
     使用 whisper 识别音频文件内语音，并生成字幕文件。
 
@@ -71,11 +77,11 @@ if __name__ == "__main__":
         os.makedirs(OUTPUT_DIR_PATH)
         print(f"Create {OUTPUT_DIR_PATH}")
 
-    audio_path: str = extraction(VIDEO_PATH, OUTPUT_DIR_PATH)
-    result: dict[str, str | list] = transcribe(audio_path, "small", None, PROMPT)
-    write_output(result, FILE_NAME, OUTPUT_DIR_PATH)
-    
-    os.remove(audio_path)
+    tmp_audio_path: str = extraction(VIDEO_PATH, OUTPUT_DIR_PATH)
+    res: dict[str, str | list] = transcribe(tmp_audio_path, "small", None, PROMPT)
+    write_output(res, FILE_NAME, OUTPUT_DIR_PATH)
+
+    os.remove(tmp_audio_path)
 
     t2: float = time.perf_counter()
     print(f"Total time: {(t2 - t1):.2f}s")

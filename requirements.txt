@@ -2,6 +2,7 @@ openai-whisper
 faster-whisper
 SpeechRecognition
 soundfile
+gradio
 
 --extra-index-url https://download.pytorch.org/whl/cu118
 

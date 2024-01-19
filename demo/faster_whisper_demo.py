@@ -1,14 +1,19 @@
-from faster_whisper import WhisperModel
+"""
+使用 Faster Whisper 对视频文件进行音频识别
+"""
+
 import os
 import time
 from pathlib import Path
+
+from faster_whisper import WhisperModel
 
 PROJ_ROOT: Path = Path().resolve()
 MODEL_PATH: str = os.path.join(PROJ_ROOT, "models", "faster_whisper")
 PROMPT = "如果使用了中文，请使用简体中文来表示文本内容"
 
 
-def extraction(video_path: str, output_dir_path: str):
+def extraction(video_path: str, output_dir_path: str) -> str:
     """
     利用 FFmpeg 提取视频中的音频文件
 
@@ -32,23 +37,31 @@ def transcribe(audio_path: str, model_size: str, language: str | None = None, pr
     :param prompt: 提示词，默认为空
     """
     # Run on GPU with FP16
-    model = WhisperModel(model_size, device="cuda", compute_type="float16", download_root=MODEL_PATH, local_files_only=True)
+    model = WhisperModel(
+        model_size, device="cuda", compute_type="float16", download_root=MODEL_PATH, local_files_only=True
+    )
 
     # or run on GPU with INT8
-    # model = WhisperModel(model_size, device="cuda", compute_type="int8_float16", download_root=MODEL_PATH, local_files_only=True)
+    # model = WhisperModel(
+    #     model_size,
+    #     device="cuda",
+    #     compute_type="int8_float16",
+    #     download_root=MODEL_PATH,
+    #     local_files_only=True,
+    # )
     # or run on CPU with INT8
     # model = WhisperModel(model_size, device="cpu", compute_type="int8")
-    
+
     # ================
     # BASIC USAGE
     segments, info = model.transcribe(audio_path, beam_size=5, language=language, initial_prompt=prompt)
-    
+
     if language is None:
         print(f"Detected language '{info.language}' with probability {info.language_probability}")
 
     for segment in segments:
         print(f"[{segment.start:.2f}s -> {segment.end:.2f}s] {segment.text}")
-    
+
     # ================
     # WORD-LEVEL TIMESTAMPS
     # segments, _ = model.transcribe(audio_path, word_timestamps=True, language=language, initial_prompt=prompt)
@@ -56,7 +69,7 @@ def transcribe(audio_path: str, model_size: str, language: str | None = None, pr
     # for segment in segments:
     #     for word in segment.words:
     #         print("[%.2fs -> %.2fs] %s" % (word.start, word.end, word.word))
-    
+
     # ================
     # VAD FILTER
     # segments, _ = model.transcribe(
@@ -66,20 +79,20 @@ def transcribe(audio_path: str, model_size: str, language: str | None = None, pr
     #     vad_filter=True,
     #     vad_parameters=dict(min_silence_duration_ms=500)
     # )
-    
+
     # for segment in segments:
     #     print(f"[{segment.start:.2f}s -> {segment.end:.2f}s] {segment.text}")
 
 
 if __name__ == "__main__":
     t1: float = time.perf_counter()
-    
+
     VIDEO_PATH: str = os.path.join(PROJ_ROOT, "input", "zh.mp4")
-    
-    audio_path: str = extraction(VIDEO_PATH, PROJ_ROOT)
-    transcribe(audio_path, "large", None, PROMPT)
-    
-    os.remove(audio_path)
-    
+
+    tmp_audio_path: str = extraction(VIDEO_PATH, PROJ_ROOT)
+    transcribe(tmp_audio_path, "large", None, PROMPT)
+
+    os.remove(tmp_audio_path)
+
     t2: float = time.perf_counter()
     print(f"Total time: {(t2 - t1):.2f}s")
