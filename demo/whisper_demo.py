@@ -52,18 +52,17 @@ def transcribe(
 
 def write_output(result: dict[str, str | list], file_name: str, output_dir_path: str, output_format: str = "srt"):
     """
-    生成输入文件。
+    生成输出文件。
 
     :param result: 字典类型，经过 whisper 进行 transcribe 后的内容
     :param file_name: 输出文件名
     :param output_dir_path: 输出文件夹路径
     :param output_format: 输出文件格式, 默认为 "srt"
     """
-    file_path: str = f"{file_name}.{output_format}"
     # output_format: txt, vtt, srt, tsv, json, all
     writer = get_writer(output_format, output_dir_path)
-    writer(result, file_path)
-    print(f"{file_path} is written.")
+    writer(result, file_name)
+    print(f"{file_name} is written.")
 
 
 if __name__ == "__main__":
