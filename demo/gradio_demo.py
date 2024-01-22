@@ -4,7 +4,6 @@ UI Demo
 
 import os
 import tempfile
-from pathlib import Path
 
 import gradio as gr
 import whisper
@@ -49,8 +48,6 @@ def transcribe(
     file_name, _ = os.path.splitext(audio_path)
     _, file_name = os.path.split(file_name)
 
-    # model_path: str = os.path.join(Path().resolve(), "models")
-    # model: whisper.Whisper = whisper.load_model(model_name, download_root=model_path)
     model: whisper.Whisper = whisper.load_model(model_size)
     result: dict[str, str | list] = model.transcribe(audio_path, language=language, initial_prompt=prompt)
 

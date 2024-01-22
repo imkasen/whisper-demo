@@ -44,7 +44,11 @@ def transcribe(
     :return: 返回字典类型，即经过 whisper 进行 transcribe 后的内容
     """
     # model_name: tiny, base, small, medium, large
-    model: whisper.Whisper = whisper.load_model(model_name, download_root=MODEL_PATH)
+    # model: whisper.Whisper = whisper.load_model(model_name, download_root=MODEL_PATH)
+
+    # Model path on Windows: C:\Users\<UserName>\.cache\whisper
+    model: whisper.Whisper = whisper.load_model(model_name)
+
     result: dict[str, str | list] = model.transcribe(audio_path, language=language, initial_prompt=prompt)
     print(f"{audio_path} is transcribed.")
     return result

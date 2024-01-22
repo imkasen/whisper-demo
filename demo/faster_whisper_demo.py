@@ -37,18 +37,20 @@ def transcribe(audio_path: str, model_size: str, language: str | None = None, pr
     :param prompt: 提示词，默认为空
     """
     # Run on GPU with FP16
-    model = WhisperModel(
-        model_size, device="cuda", compute_type="float16", download_root=MODEL_PATH, local_files_only=True
-    )
-
-    # or run on GPU with INT8
     # model = WhisperModel(
     #     model_size,
     #     device="cuda",
-    #     compute_type="int8_float16",
+    #     compute_type="float16",
     #     download_root=MODEL_PATH,
     #     local_files_only=True,
     # )
+
+    # Model path on Windows: C:\Users\<UserName>\.cache\huggingface\hub
+    model = WhisperModel(model_size, device="cuda", compute_type="float16", local_files_only=True)
+
+    # or run on GPU with INT8
+    # model = WhisperModel(model_size, device="cuda", compute_type="int8_float16")
+
     # or run on CPU with INT8
     # model = WhisperModel(model_size, device="cpu", compute_type="int8")
 

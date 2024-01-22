@@ -35,7 +35,7 @@ def whisper_recognition(
             audio_data=audio,
             model=model,
             language=language,
-            load_options={"download_root": MODEL_PATH},
+            # load_options={"download_root": MODEL_PATH},
             initial_prompt=prompt,
         )
         if (results := results.strip()) != "":
@@ -70,7 +70,7 @@ def faster_whisper_recognition(
             model_size,
             device="cuda",
             compute_type="float16",
-            download_root=os.path.join(MODEL_PATH, "faster_whisper"),
+            # download_root=os.path.join(MODEL_PATH, "faster_whisper"),
             local_files_only=True,
         )
 
