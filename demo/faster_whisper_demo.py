@@ -70,7 +70,7 @@ def transcribe(audio_path: str, model_size: str, language: str | None = None, pr
 
     # for segment in segments:
     #     for word in segment.words:
-    #         print("[%.2fs -> %.2fs] %s" % (word.start, word.end, word.word))
+    #         print(f"[{word.start:.2f}s -> {word.end:.2f}s] {word.word}")
 
     # ================
     # VAD FILTER
@@ -79,7 +79,7 @@ def transcribe(audio_path: str, model_size: str, language: str | None = None, pr
     #     language=language,
     #     initial_prompt=prompt,
     #     vad_filter=True,
-    #     vad_parameters=dict(min_silence_duration_ms=500)
+    #     vad_parameters={"min_silence_duration_ms": 500},
     # )
 
     # for segment in segments:
