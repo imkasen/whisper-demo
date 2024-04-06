@@ -23,7 +23,7 @@ def audio_extraction(video_path: str) -> str:
     video_name, _ = os.path.splitext(video_path)
     _, video_name = os.path.split(video_name)
     audio_path: str = os.path.join(tempfile.gettempdir(), f"{video_name}.aac")
-    os.system(f"ffmpeg -hide_banner -v error -i {video_path} -vn -c:a copy {audio_path} -y")
+    os.system(f"ffmpeg -hide_banner -v error -i '{video_path}' -vn -c:a copy '{audio_path}' -y")
     return audio_path
 
 
@@ -91,7 +91,8 @@ def faster_whisper_transcribe(
     file_name, _ = os.path.splitext(audio_path)
     _, file_name = os.path.split(file_name)
 
-    model = WhisperModel(model_size, device=device, compute_type="float16", local_files_only=True)
+    # model = WhisperModel(model_size, device=device, compute_type="float16", local_files_only=True)
+    model = WhisperModel(model_size, device=device, compute_type="float16")
     segments, _ = model.transcribe(
         audio_path,
         beam_size=5,
@@ -168,7 +169,7 @@ with gr.Blocks(title="Whisper Gradio Demo") as demo:
         )
 
         whisper_audio_submit.click(  # pylint: disable=E1101
-            fn=lambda: gr.Info("开始转录。"),
+            fn=lambda: gr.Info("开始转录"),
         ).then(
             fn=whisper_transcribe,
             inputs=[
@@ -180,7 +181,7 @@ with gr.Blocks(title="Whisper Gradio Demo") as demo:
             ],
             outputs=[whisper_result_text, whisper_result_file],
         ).then(
-            fn=lambda: gr.Info("转录完成。"),
+            fn=lambda: gr.Info("结束转录"),
         )
 
     with gr.Tab(label="Faster Whisper"):
@@ -224,7 +225,7 @@ with gr.Blocks(title="Whisper Gradio Demo") as demo:
             outputs=faster_whisper_upload_audio,
         )
         faster_whisper_audio_submit.click(  # pylint: disable=E1101
-            fn=lambda: gr.Info("开始转录。"),
+            fn=lambda: gr.Info("开始转录"),
         ).then(
             fn=faster_whisper_transcribe,
             inputs=[
@@ -236,7 +237,7 @@ with gr.Blocks(title="Whisper Gradio Demo") as demo:
             ],
             outputs=[faster_whisper_result_text, faster_whisper_result_file],
         ).then(
-            fn=lambda: gr.Info("转录完成。"),
+            fn=lambda: gr.Info("结束转录"),
         )
 
 
